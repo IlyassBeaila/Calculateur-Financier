@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur Financier France — Simulez vos revenus</title>
+  <meta name="description" content="Simulateur financier gratuit pour la France : freelance, salaire brut/net, comparateur statuts, crypto et impôts sur le revenu. Calculs basés sur les barèmes 2024.">
+  <meta name="keywords" content="calculateur financier, simulateur freelance, brut net, impôts France, TJM, micro-entrepreneur, SASU, EURL, portage salarial, crypto fiscalité">
+  <meta name="author" content="Calculateur Financier">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculateur-financier.netlify.app/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Calculateur Financier France">
+  <meta property="og:description" content="Combien vous gagnez vraiment ? Simulez vos revenus freelance, salaire, crypto et impôts en France.">
+  <meta property="og:url" content="https://calculateur-financier.netlify.app/">
+  <meta property="og:site_name" content="Calculateur Financier">
+  <meta property="og:locale" content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Calculateur Financier France">
+  <meta name="twitter:description" content="Simulez vos revenus freelance, salaire brut/net, crypto et impôts en France.">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Calculateur Financier</h1>
+    <p class="subtitle">Combien vous gagnez vraiment ? Simulez vos revenus en France.</p>
+  </header>
+
+  <div class="report-bar">
+    <button id="btn-report" class="btn-report" title="Générer un rapport PDF de la simulation en cours">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Générer le rapport
+    </button>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="freelance">Freelance</button>
+    <button class="tab-btn" data-tab="salaire">Brut → Net</button>
+    <button class="tab-btn" data-tab="comparateur">Comparateur</button>
+    <button class="tab-btn" data-tab="crypto">Crypto</button>
+    <button class="tab-btn" data-tab="impots">Impôts</button>
+  </nav>
+
+  <main>
+    <!-- ═══ FREELANCE ═══ -->
+    <section id="tab-freelance" class="tab-panel active">
+      <div class="card">
+        <div class="card-title">Revenus</div>
+
+        <div class="input-row">
+          <label>Mode de saisie</label>
+          <div class="pill-group" id="fl-mode-group">
+            <label><input type="radio" name="fl-mode" value="tjm" checked><span>TJM</span></label>
+            <label><input type="radio" name="fl-mode" value="mensuel"><span>Mensuel</span></label>
+            <label><input type="radio" name="fl-mode" value="annuel"><span>CA annuel</span></label>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="fl-amount" id="fl-amount-label">TJM (€)</label>
+          <div class="input-wrap">
+            <input type="range" id="fl-slider" min="100" max="2000" value="500" step="10">
+            <input type="number" id="fl-amount" value="500" min="0" step="10">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="fl-statut">Statut</label>
+          <select id="fl-statut">
+            <option value="micro">Micro-entrepreneur</option>
+            <option value="eurl">EURL / SARL</option>
+            <option value="sasu">SASU</option>
+            <option value="portage">Portage salarial</option>
+          </select>
+        </div>
+
+        <div class="check-row" id="fl-vfl-row">
+          <input type="checkbox" id="fl-vfl">
+          <label for="fl-vfl">Versement libératoire de l'IR (2.2%)</label>
+        </div>
+
+        <div class="input-row" id="fl-split-row" style="display:none">
+          <label>Salaire / Dividendes</label>
+          <div class="input-wrap">
+            <input type="range" id="fl-split" min="0" max="100" value="50">
+            <span id="fl-split-label" style="color:var(--text2);font-size:0.85rem;min-width:70px">50% / 50%</span>
+          </div>
+        </div>
+
+        <div class="input-row" id="fl-frais-row" style="display:none">
+          <label>Frais de gestion (%)</label>
+          <div class="input-wrap">
+            <input type="range" id="fl-frais" min="5" max="15" value="10" step="1">
+            <input type="number" id="fl-frais-val" value="10" min="1" max="20">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="fl-jours">Jours / an</label>
+          <div class="input-wrap">
+            <input type="range" id="fl-jours-slider" min="100" max="260" value="218">
+            <input type="number" id="fl-jours" value="218" min="1" max="365">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="fl-parts">Parts fiscales</label>
+          <select id="fl-parts">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+            <option value="3.5">3.5</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results" id="fl-results"></div>
+    </section>
+
+    <!-- ═══ SALAIRE ═══ -->
+    <section id="tab-salaire" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Salaire brut</div>
+
+        <div class="input-row">
+          <label>Période</label>
+          <div class="pill-group" id="sal-mode-group">
+            <label><input type="radio" name="sal-mode" value="mensuel" checked><span>Mensuel</span></label>
+            <label><input type="radio" name="sal-mode" value="annuel"><span>Annuel</span></label>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="sal-amount" id="sal-amount-label">Brut mensuel (€)</label>
+          <div class="input-wrap">
+            <input type="range" id="sal-slider" min="1500" max="15000" value="3500" step="50">
+            <input type="number" id="sal-amount" value="3500" min="0" step="50">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label>Statut</label>
+          <div class="pill-group" id="sal-cadre-group">
+            <label><input type="radio" name="sal-cadre" value="cadre" checked><span>Cadre</span></label>
+            <label><input type="radio" name="sal-cadre" value="non-cadre"><span>Non-cadre</span></label>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="sal-parts">Parts fiscales</label>
+          <select id="sal-parts">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+            <option value="3.5">3.5</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results" id="sal-results"></div>
+    </section>
+
+    <!-- ═══ COMPARATEUR ═══ -->
+    <section id="tab-comparateur" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Paramètres de comparaison</div>
+
+        <div class="input-row">
+          <label for="cmp-ca">CA freelance (€/an)</label>
+          <div class="input-wrap">
+            <input type="range" id="cmp-slider" min="20000" max="300000" value="80000" step="1000">
+            <input type="number" id="cmp-ca" value="80000" min="0" step="1000">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="cmp-statut">Statut freelance</label>
+          <select id="cmp-statut">
+            <option value="micro">Micro-entrepreneur</option>
+            <option value="eurl">EURL / SARL</option>
+            <option value="sasu">SASU</option>
+            <option value="portage">Portage salarial</option>
+          </select>
+        </div>
+
+        <div class="input-row">
+          <label for="cmp-brut">Salaire brut (€/an)</label>
+          <div class="input-wrap">
+            <input type="range" id="cmp-brut-slider" min="20000" max="200000" value="50000" step="1000">
+            <input type="number" id="cmp-brut" value="50000" min="0" step="1000">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="cmp-parts">Parts fiscales</label>
+          <select id="cmp-parts">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results" id="cmp-results"></div>
+    </section>
+
+    <!-- ═══ CRYPTO ═══ -->
+    <section id="tab-crypto" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Plus-values crypto / trading</div>
+
+        <div class="input-row">
+          <label for="cr-achat">Prix d'achat (€)</label>
+          <div class="input-wrap">
+            <input type="number" id="cr-achat" value="1000" min="0" step="1" style="max-width:100%">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="cr-vente">Prix de vente (€)</label>
+          <div class="input-wrap">
+            <input type="number" id="cr-vente" value="5000" min="0" step="1" style="max-width:100%">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="cr-qty">Quantité</label>
+          <div class="input-wrap">
+            <input type="number" id="cr-qty" value="1" min="0" step="0.0001" style="max-width:100%">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label>Imposition</label>
+          <div class="pill-group" id="cr-regime-group">
+            <label><input type="radio" name="cr-regime" value="flat" checked><span>Flat tax (30%)</span></label>
+            <label><input type="radio" name="cr-regime" value="bareme"><span>Barème IR</span></label>
+          </div>
+        </div>
+
+        <div class="input-row" id="cr-parts-row" style="display:none">
+          <label for="cr-parts">Parts fiscales</label>
+          <select id="cr-parts">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results" id="cr-results"></div>
+    </section>
+
+    <!-- ═══ IMPOTS ═══ -->
+    <section id="tab-impots" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Impôt sur le revenu</div>
+
+        <div class="input-row">
+          <label for="ir-revenu">Revenu net annuel (€)</label>
+          <div class="input-wrap">
+            <input type="range" id="ir-slider" min="0" max="200000" value="35000" step="500">
+            <input type="number" id="ir-revenu" value="35000" min="0" step="100">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="ir-parts">Parts fiscales</label>
+          <select id="ir-parts">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+            <option value="3.5">3.5</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results" id="ir-results"></div>
+    </section>
+  </main>
+
+  <div class="disclaimer">
+    Simulation indicative basée sur les taux 2024. Ne constitue pas un conseil fiscal.<br>
+    Consultez un expert-comptable pour votre situation personnelle.
+  </div>
+</div>
+
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
